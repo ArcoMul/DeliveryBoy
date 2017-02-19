@@ -44,7 +44,7 @@ public class Player : MonoBehaviour {
             Waypoint nextWaypoint = currentPath[0];
             Vector3 direction = nextWaypoint.transform.position - this.transform.position;
             this.transform.Translate(direction.normalized / 10);
-            if (Vector3.Distance(this.transform.position, nextWaypoint.transform.position) < 0.1)
+            if (Vector3.Distance(this.transform.position, nextWaypoint.transform.position) < 0.05)
             {
                 currentPath.RemoveAt(0);
             }

@@ -110,7 +110,7 @@ public class WaypointManager : MonoBehaviour {
         {
             foreach (Waypoint other in waypoints)
             {
-                if (Vector3.Distance(current.transform.position, other.transform.position) < 6) {
+                if (Vector3.Distance(current.transform.position, other.transform.position) < World.tileSize + (World.tileSize / 4)) {
                     current.addConnection(other);
                 }
             }
