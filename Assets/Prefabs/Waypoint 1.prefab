@@ -123,9 +123,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   connections: []
   walkable: 1
+  parent: {fileID: 0}
   hCost: 0
   gCost: 0
-  parent: {fileID: 0}
 --- !u!135 &135258024945527348
 SphereCollider:
   m_ObjectHideFlags: 1
