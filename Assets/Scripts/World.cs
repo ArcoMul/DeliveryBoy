@@ -29,7 +29,7 @@ public class World : MonoBehaviour {
     {
         createWorld();
         waypointManager.connectWaypoints();
-	}
+    }
 
     /**
      * Creates a world of tiles based on a string array

@@ -22,14 +22,8 @@ public class Player : MonoBehaviour {
             _state = value;
         }
     }
-
-
-	void Start ()
-    {
-		
-	}
 	
-	void Update ()
+    void Update ()
     {
         if (Input.GetMouseButtonDown(0)) {
             onMouseClick();
