@@ -7,35 +7,28 @@ public class WaypointManager : MonoBehaviour {
     public Transform waypointPrefab;
     public List<Waypoint> waypoints;
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
-
+    /**
+     * Return the closest waypoint to a given position in the World
+     */
     public Waypoint getClosestWayPointToPosition (Vector3 position)
     {
-        // Debug.Log("getClosestWayPointToPosition: " + position);
         float closestDistance = -1;
         Waypoint closest = null;
         foreach(Waypoint waypoint in waypoints)
         {
             float distance = Vector3.Distance(waypoint.transform.position, position);
-            // Debug.Log("Waypoint: " + waypoint.name + " - " + position + " vs. " + waypoint.transform.position + " - " + distance);
             if (distance < closestDistance || closestDistance == -1)
             {
                 closestDistance = distance;
                 closest = waypoint;
             }
         }
-        // Debug.Log("closest: " + closest.name);
         return closest;
     }
 
+    /**
+     * Using A* find a path from a start waypoint to an end waypoint
+     */
     public List<Waypoint> findPath (Waypoint start, Waypoint end)
     {
         List<Waypoint> openSet = new List<Waypoint>();
@@ -43,6 +36,7 @@ public class WaypointManager : MonoBehaviour {
         openSet.Add(start);
         while (openSet.Count > 0)
         {
+            // Find the next optimal waypoint based on the distance to the start and the distance to the end
             Waypoint currentWaypoint = openSet[0];
             for (int i = 1; i < openSet.Count; i++)
             {
@@ -52,14 +46,17 @@ public class WaypointManager : MonoBehaviour {
                 }
             }
 
+            // Make sure to check each waypoint only once
             openSet.Remove(currentWaypoint);
             closedSet.Add(currentWaypoint);
 
+            // We made it, quit the loop and convert the found path to a waypoint list
             if (currentWaypoint == end)
             {
                 return retracePath(start, currentWaypoint);
             }
 
+            // Update the cost of each neighbor of the current waypoint, so that in the next loop the right decision can be made
             foreach (Waypoint neighbor in currentWaypoint.connections)
             {
                 if (!neighbor.walkable || closedSet.Contains(neighbor))
@@ -83,6 +80,10 @@ public class WaypointManager : MonoBehaviour {
         return null;
     }
 
+    /**
+     * Converts the parent waypoint relation (while figuring out the right path)
+     * to a list of waypoint which an object can follow
+     */
     List<Waypoint> retracePath (Waypoint start, Waypoint end)
     {
         List<Waypoint> list = new List<Waypoint>();
@@ -97,6 +98,9 @@ public class WaypointManager : MonoBehaviour {
         return list;
     }
 
+    /**
+     * Creates a waypoint on a certain position
+     */
     public void createWaypoint (Vector3 pos)
     {
         Transform p = Instantiate(waypointPrefab, pos, Quaternion.identity);
@@ -104,6 +108,11 @@ public class WaypointManager : MonoBehaviour {
         waypoints.Add(p.GetComponent<Waypoint>());
     }
 
+    /**
+     * Connect the waypoint to eachother based on their distance to eachother
+     * For now assume that if two tiles are next to eachother that they can be reached from eachother
+     * This would bug out when there is a parallel road
+     */
     public void connectWaypoints ()
     {
         foreach (Waypoint current in waypoints)

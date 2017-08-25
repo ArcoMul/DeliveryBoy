@@ -5,10 +5,8 @@ using UnityEngine;
 public class Player : MonoBehaviour {
 
     public WaypointManager waypointManager;
-    public Transform target;
 
-    Vector3 movingGoal;
-    Vector3 movingStartPosition;
+    // If the player is moving, this is the path to follow
     List<Waypoint> currentPath;
 
     string _state;
@@ -26,19 +24,18 @@ public class Player : MonoBehaviour {
     }
 
 
-	// Use this for initialization
 	void Start ()
     {
 		
 	}
 	
-	// Update is called once per frame
 	void Update ()
     {
         if (Input.GetMouseButtonDown(0)) {
             onMouseClick();
         }
 
+        // While moving, move to the next point in the path the player is following
         if (state == "moving")
         {
             Waypoint nextWaypoint = currentPath[0];
@@ -55,6 +52,9 @@ public class Player : MonoBehaviour {
         }
     }
 
+    /**
+     * Find where the user clicked, translate to world position, start moving the player there
+     */
     void onMouseClick ()
     {
         Plane plane = new Plane(Vector3.up, 0);
@@ -67,24 +67,12 @@ public class Player : MonoBehaviour {
         }
     }
 
+    /**
+     * Move the player to a certain goal position, following the waypoints.
+     */
     void moveTo (Vector3 _goal)
     {
-        Debug.Log("moveTo " + _goal);
-        movingGoal = _goal;
-        target.position = movingGoal;
         state = "moving";
-        currentPath = waypointManager.findPath(waypointManager.getClosestWayPointToPosition(this.transform.position), waypointManager.getClosestWayPointToPosition(movingGoal));
-        if (currentPath == null)
-        {
-            Debug.LogError("No path found");
-        }
-        else
-        {
-            Debug.Log("Found path:");
-            foreach(Waypoint waypoint in currentPath)
-            {
-                Debug.Log(waypoint.name);
-            }
-        }
+        currentPath = waypointManager.findPath(waypointManager.getClosestWayPointToPosition(this.transform.position), waypointManager.getClosestWayPointToPosition(_goal));
     }
 }

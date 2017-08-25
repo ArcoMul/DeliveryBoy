@@ -8,6 +8,7 @@ public class World : MonoBehaviour {
     public static int worldSize = 10;
     public WaypointManager waypointManager;
 
+    // Different types of road prefabs
     public Transform roadStraight;
     public Transform roadTSplit;
     public Transform roadCrossway;
@@ -24,16 +25,28 @@ public class World : MonoBehaviour {
                                           {"x",".",".",".",".",".","x",".",".","x"},
                                           {"x","x","x","x","x","x","x","x","x","x"}};
 
-    // Use this for initialization
-    void Start () {
+    void Start ()
+    {
+        createWorld();
+        waypointManager.connectWaypoints();
+	}
+
+    /**
+     * Creates a world of tiles based on a string array
+     * x means road
+     * . means empty
+     */
+    void createWorld ()
+    {
         for (int y = 0; y < 10; y++)
         {
             for (int x = 0; x < 10; x++)
             {
                 if (tiles[y, x] == "x")
                 {
+                    // Figure out what kind of neighor tiles this tile has
                     bool top = false, right = false, bottom = false, left = false;
-                    if (y > 0 && tiles[y-1, x] == "x")
+                    if (y > 0 && tiles[y - 1, x] == "x")
                     {
                         top = true;
                     }
@@ -45,10 +58,12 @@ public class World : MonoBehaviour {
                     {
                         left = true;
                     }
-                    if (x < worldSize-1 && tiles[y, x + 1] == "x")
+                    if (x < worldSize - 1 && tiles[y, x + 1] == "x")
                     {
                         right = true;
                     }
+
+                    // Instantiate the right prefab based on which neighbor there are
                     Transform road = roadStraight;
                     float angle = 0;
                     string name = "none";
@@ -122,11 +137,5 @@ public class World : MonoBehaviour {
                 }
             }
         }
-        waypointManager.connectWaypoints();
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    }
 }
